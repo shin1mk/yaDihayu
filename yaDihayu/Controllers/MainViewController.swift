@@ -21,6 +21,7 @@ final class MainViewController: UIViewController {
         label.numberOfLines = 0
         return label
     }()
+    // кнопка
     private let startButton: UIButton = {
         let button = UIButton()
         button.setTitle("Начать", for: .normal)
@@ -37,7 +38,7 @@ final class MainViewController: UIViewController {
         setupUI()
         setupTarget()
     }
-    // animation
+    // animation вью
     private func animationFlower() {
         koalaView = .init(name: "Koala")
         koalaView!.frame = view.bounds
@@ -72,15 +73,13 @@ final class MainViewController: UIViewController {
     }
     // tapped
     @objc private func startButtonTapped() {
-        let breatheViewController = FlowerViewController()
+        let flowerViewController = FlowerViewController()
         // Установите анимацию transitionFrom
         let transition = CATransition()
-        transition.duration = 0.7
+        transition.duration = 0.6
         transition.type = CATransitionType.fade
         view.window?.layer.add(transition, forKey: kCATransition)
-        breatheViewController.modalPresentationStyle = .overFullScreen
-        present(breatheViewController, animated: false, completion: nil)
+        flowerViewController.modalPresentationStyle = .overFullScreen
+        present(flowerViewController, animated: false, completion: nil)
     }
-
-
 } // end
