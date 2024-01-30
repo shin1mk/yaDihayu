@@ -14,28 +14,34 @@ import Lottie
 
 final class FlowerViewController: UIViewController {
     // свойства
-    private var animationView: LottieAnimationView?
+    private var flowerView: LottieAnimationView?
+    // текст
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Садись поудобнее, расслабь свое тело. Делай вдох и выдох"
-        label.font = UIFont.SFUITextMedium(ofSize: 20)
+        label.text = "Садись поудобнее\nРасслабь свое тело\nДелай вдох и выдох"
+        label.font = UIFont.SFUITextRegular(ofSize: 25)
         label.textAlignment = .center
-        label.textColor = .white
+//        label.textColor = .systemBlue
+        label.textColor = UIColor(red: 85/255.0, green: 175/255.0, blue: 231/255.0, alpha: 1.0)
         label.numberOfLines = 0
         return label
     }()
     private let startButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Начать", for: .normal)
-        button.titleLabel?.font = UIFont.SFUITextMedium(ofSize: 20)
+        button.setTitle("Начнем", for: .normal)
+        button.titleLabel?.font = UIFont.SFUITextRegular(ofSize: 20)
+        button.layer.cornerRadius = 10
+//        button.backgroundColor = .systemGray6
+        button.backgroundColor = UIColor(red: 85/255.0, green: 175/255.0, blue: 231/255.0, alpha: 1.0)
         button.setTitleColor(.white, for: .normal)
+//        button.setTitleColor(UIColor(red: 85/255.0, green: 175/255.0, blue: 231/255.0, alpha: 1.0), for: .normal)
         return button
     }()  
-    private let stopButton: UIButton = {
+    private let closeButton: UIButton = {
         let button = UIButton()
-        button.setTitle("stop", for: .normal)
-        button.titleLabel?.font = UIFont.SFUITextMedium(ofSize: 20)
-        button.setTitleColor(.white, for: .normal)
+        button.setImage(UIImage(systemName: "xmark.circle"), for: .normal)
+        button.tintColor = UIColor(red: 85/255.0, green: 175/255.0, blue: 231/255.0, alpha: 1.0)
+        button.contentEdgeInsets = UIEdgeInsets(top: 25, left: 25, bottom: 25, right: 25)
         return button
     }()
     // цикл
@@ -47,7 +53,12 @@ final class FlowerViewController: UIViewController {
     // методы
     private func setupUI() {
         view.backgroundColor = .black
-        
+        // закрыть
+        view.addSubview(closeButton)
+        closeButton.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(30)
+            make.trailing.equalToSuperview()
+        }
         // текст
         view.addSubview(titleLabel)
         titleLabel.snp.makeConstraints { make in
@@ -59,154 +70,79 @@ final class FlowerViewController: UIViewController {
         view.addSubview(startButton)
         startButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.bottom.equalToSuperview().inset(100)
-        }
-        view.addSubview(stopButton)
-        stopButton.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
             make.bottom.equalToSuperview().inset(30)
+            make.width.equalTo(200)
         }
     }
     // анимация
-//    private func animationFlower() {
-//        // Fade out the titleLabel
-//        UIView.animate(withDuration: 0.7, animations: {
-//            self.titleLabel.alpha = 0
-//        }) { _ in
-//            // Remove the titleLabel from the superview
-//            self.titleLabel.removeFromSuperview()
-//            // Add and animate the Lottie animationView
-//            self.animationView = LottieAnimationView(name: "BlueFlower")
-//            self.animationView?.frame = self.view.bounds
-//            self.animationView?.contentMode = .scaleAspectFit
-//            self.animationView?.loopMode = .repeat(10)
-//            self.animationView?.animationSpeed = 2
-//            self.view.addSubview(self.animationView!)
-//            self.animationView?.play()
-//        }
-//    }
     private func animationFlower() {
         // Fade out the titleLabel
         UIView.animate(withDuration: 0.7, animations: {
             self.titleLabel.alpha = 0
         }) { _ in
-            // Remove the titleLabel from the superview
-            self.titleLabel.removeFromSuperview()
             // Add and animate the Lottie animationView
-            self.animationView = LottieAnimationView(name: "BlueFlower")
-            self.animationView?.frame = self.view.bounds
-            self.animationView?.contentMode = .scaleAspectFit
-            self.animationView?.loopMode = .repeat(10)
-            self.animationView?.animationSpeed = 2
-            self.view.addSubview(self.animationView!)
-            self.animationView?.play()
-
-            // Set constraints for animationView to have a bottom margin of 200 pixels
-            self.animationView?.snp.makeConstraints { make in
+            self.flowerView = LottieAnimationView(name: "BlueFlower")
+            self.flowerView?.frame = self.view.bounds
+            self.flowerView?.contentMode = .scaleAspectFit
+            self.flowerView?.loopMode = .repeat(10)
+            self.flowerView?.animationSpeed = 2
+            self.view.addSubview(self.flowerView!)
+            self.flowerView?.play()
+            // Set constraints for animationView to have a bottom margin of 100 pixels
+            self.flowerView?.snp.makeConstraints { make in
                 make.leading.equalToSuperview()
                 make.trailing.equalToSuperview()
                 make.bottom.equalToSuperview().inset(100)
-                make.top.equalToSuperview()
+                make.top.equalToSuperview().inset(100)
+            }
+        }
+    }
+    // target
+    private func setupTarget() {
+        startButton.addTarget(self, action: #selector(startButtonTapped), for: .touchUpInside)
+        closeButton.addTarget(self, action: #selector(closeButtonTapped), for: .touchUpInside)
+    }
+
+    @objc private func startButtonTapped() {
+        if startButton.currentTitle == "Начнем" {
+            // Нажата кнопка "Начать"
+            UIView.animate(withDuration: 0.7, animations: {
+                self.animationFlower()
+                self.startButton.alpha = 0
+            }) { _ in
+                self.startButton.setTitle("Закончить", for: .normal)
+                UIView.animate(withDuration: 0.7) {
+                    self.startButton.alpha = 1
+                }
+            }
+        } else {
+            // Нажата кнопка "Стоп"
+            UIView.animate(withDuration: 0.7, animations: {
+                self.stopAnimation()
+                self.startButton.alpha = 0
+            }) { _ in
+                self.startButton.setTitle("Начнем", for: .normal)
+                UIView.animate(withDuration: 0.7) {
+                    self.startButton.alpha = 1
+                }
             }
         }
     }
 
-    // target
-    private func setupTarget() {
-        startButton.addTarget(self, action: #selector(startButtonTapped), for: .touchUpInside)
-        stopButton.addTarget(self, action: #selector(stopButtonTapped), for: .touchUpInside)
+    private func stopAnimation() {
+        // Остановка анимации
+        flowerView?.stop()
+        flowerView?.removeFromSuperview()
+        
+        // Показываем снова titleLabel
+        UIView.animate(withDuration: 0.7) {
+            self.titleLabel.alpha = 1.0
+        }
     }
 
-    @objc private func startButtonTapped() {
-        animationFlower()
-    }    
-    
-    @objc private func stopButtonTapped() {
-        print("stopButton")
+    @objc private func closeButtonTapped() {
+        dismiss(animated: true, completion: nil)
+        stopAnimation()
     }
+
 }
-/*
-import UIKit
-import SnapKit
-import Lottie
-
-final class FlowerView: UIView {
-    // свойства
-    private var animationView: LottieAnimationView?
-    private let titleLabel: UILabel = {
-        let label = UILabel()
-        label.text = "Садись поудобнее, расслабь свое тело. Делай вдох и выдох"
-        label.font = UIFont.SFUITextMedium(ofSize: 20)
-        label.textAlignment = .center
-        label.textColor = .white
-        label.numberOfLines = 0
-        return label
-    }()
-    private let startButton: UIButton = {
-        let button = UIButton()
-        button.setTitle("Начать", for: .normal)
-        button.titleLabel?.font = UIFont.SFUITextMedium(ofSize: 20)
-        button.setTitleColor(.white, for: .normal)
-        return button
-    }()
-  
-    // инициализатор
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        setupUI()
-        setupTarget()
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        setupUI()
-        setupTarget()
-    }
-
-    // методы
-    private func setupUI() {
-        backgroundColor = .black
-        // текст
-        addSubview(titleLabel)
-        titleLabel.snp.makeConstraints { make in
-            make.centerY.equalTo(self)
-            make.centerX.equalTo(self)
-            make.width.equalTo(300)
-        }
-        // старт
-        addSubview(startButton)
-        startButton.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.bottom.equalToSuperview().inset(30)
-        }
-    }
-    
-    // анимация
-    private func animationFlower() {
-        // Fade out the titleLabel
-        UIView.animate(withDuration: 0.7, animations: {
-            self.titleLabel.alpha = 0
-        }) { _ in
-            // Remove the titleLabel from the superview
-            self.titleLabel.removeFromSuperview()
-            // Add and animate the Lottie animationView
-            self.animationView = LottieAnimationView(name: "BlueFlower")
-            self.animationView?.frame = self.bounds
-            self.animationView?.contentMode = .scaleAspectFit
-            self.animationView?.loopMode = .repeat(10)
-            self.animationView?.animationSpeed = 2
-            self.addSubview(self.animationView!)
-            self.animationView?.play()
-        }
-    }
-    
-    // target
-    private func setupTarget() {
-        startButton.addTarget(self, action: #selector(startButtonTapped), for: .touchUpInside)
-    }
-
-    @objc private func startButtonTapped() {
-        animationFlower()
-    }
-}
-*/

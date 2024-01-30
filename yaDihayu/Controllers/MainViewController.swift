@@ -15,16 +15,18 @@ final class MainViewController: UIViewController {
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Просто дыши"
-        label.font = UIFont.SFUITextHeavy(ofSize: 35)
+        label.font = UIFont.SFUITextMedium(ofSize: 35)
         label.textAlignment = .center
-        label.textColor = .white
+        label.textColor = UIColor(red: 85/255.0, green: 175/255.0, blue: 231/255.0, alpha: 1.0)
         label.numberOfLines = 0
         return label
     }()
     private let startButton: UIButton = {
         let button = UIButton()
         button.setTitle("Начать", for: .normal)
-        button.titleLabel?.font = UIFont.SFUITextHeavy(ofSize: 30)
+        button.titleLabel?.font = UIFont.SFUITextRegular(ofSize: 20)
+        button.layer.cornerRadius = 10
+        button.backgroundColor = UIColor(red: 85/255.0, green: 175/255.0, blue: 231/255.0, alpha: 1.0)
         button.setTitleColor(.white, for: .normal)
         return button
     }()
@@ -50,18 +52,17 @@ final class MainViewController: UIViewController {
         view.backgroundColor = .black
         // title label
         view.addSubview(titleLabel)
-        titleLabel.layer.zPosition = 1
         titleLabel.snp.makeConstraints { make in
-            make.centerY.equalTo(view)
+            make.top.equalToSuperview().offset(100)
             make.centerX.equalTo(view)
             make.width.equalTo(300)
         }
         // breatheButton
         view.addSubview(startButton)
-        startButton.layer.zPosition = 999
         startButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.bottom.equalToSuperview().inset(30)
+            make.width.equalTo(200)
         }
     }
     // target
