@@ -61,7 +61,7 @@ final class MainViewController: UIViewController {
         view.addSubview(startButton)
         startButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.bottom.equalToSuperview().inset(30)
+            make.bottom.equalToSuperview().inset(40)
             make.width.equalTo(200)
         }
     }

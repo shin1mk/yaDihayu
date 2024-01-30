@@ -11,6 +11,7 @@
 		135B8DAB2B68FDA600559908 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 135B8DAA2B68FDA600559908 /* Lottie */; };
 		135B8DB12B69036D00559908 /* BlueFlower.json in Resources */ = {isa = PBXBuildFile; fileRef = 135B8DAF2B69036D00559908 /* BlueFlower.json */; };
 		135B8DB32B6905DC00559908 /* Koala.json in Resources */ = {isa = PBXBuildFile; fileRef = 135B8DB22B6905DC00559908 /* Koala.json */; };
+		136FFB4D2B696DA800677C0F /* example.swift in Sources */ = {isa = PBXBuildFile; fileRef = 136FFB4C2B696DA800677C0F /* example.swift */; };
 		13DDD7192B6689CC0075D1E6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13DDD7182B6689CC0075D1E6 /* AppDelegate.swift */; };
 		13DDD71B2B6689CC0075D1E6 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13DDD71A2B6689CC0075D1E6 /* SceneDelegate.swift */; };
 		13DDD71D2B6689CC0075D1E6 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13DDD71C2B6689CC0075D1E6 /* MainViewController.swift */; };
@@ -32,6 +33,7 @@
 		135B8DA72B68FBE600559908 /* FlowerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowerViewController.swift; sourceTree = "<group>"; };
 		135B8DAF2B69036D00559908 /* BlueFlower.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = BlueFlower.json; sourceTree = "<group>"; };
 		135B8DB22B6905DC00559908 /* Koala.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = Koala.json; sourceTree = "<group>"; };
+		136FFB4C2B696DA800677C0F /* example.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = example.swift; sourceTree = "<group>"; };
 		13DDD7152B6689CC0075D1E6 /* yaDihayu.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = yaDihayu.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13DDD7182B6689CC0075D1E6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		13DDD71A2B6689CC0075D1E6 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -102,6 +104,7 @@
 				13DDD7312B668A310075D1E6 /* Controllers */,
 				13DDD7302B668A260075D1E6 /* Application */,
 				13DDD72F2B668A210075D1E6 /* Resources */,
+				136FFB4C2B696DA800677C0F /* example.swift */,
 			);
 			path = yaDihayu;
 			sourceTree = "<group>";
@@ -250,6 +253,7 @@
 				13DDD71D2B6689CC0075D1E6 /* MainViewController.swift in Sources */,
 				13DDD7192B6689CC0075D1E6 /* AppDelegate.swift in Sources */,
 				13DDD73E2B669F6F0075D1E6 /* CustomFonts.swift in Sources */,
+				136FFB4D2B696DA800677C0F /* example.swift in Sources */,
 				13DDD7462B669FF80075D1E6 /* InfoViewController.swift in Sources */,
 				13DDD71B2B6689CC0075D1E6 /* SceneDelegate.swift in Sources */,
 				13DDD7232B6689CC0075D1E6 /* yaDihayu.xcdatamodeld in Sources */,
