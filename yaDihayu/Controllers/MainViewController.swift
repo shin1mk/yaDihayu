@@ -63,6 +63,7 @@ final class MainViewController: UIViewController {
             make.centerX.equalToSuperview()
             make.bottom.equalToSuperview().inset(40)
             make.width.equalTo(200)
+            make.height.equalTo(50)
         }
     }
     // target

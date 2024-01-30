@@ -19,7 +19,7 @@ final class FlowerViewController: UIViewController {
     private var flowerView: LottieAnimationView?
     private var feedbackGenerator: CHHapticEngine?
     private var animationCounter = 0
-
+    private var isAnimationStopped = false  // Добавленная переменная
     // текст
     private let titleLabel: UILabel = {
         let label = UILabel()
@@ -77,45 +77,16 @@ final class FlowerViewController: UIViewController {
             make.centerX.equalToSuperview()
             make.bottom.equalToSuperview().inset(40)
             make.width.equalTo(200)
+            make.height.equalTo(50)
         }
     }
     // анимация
-//    private func animationFlower() {
-//        // не видно текста
-//        UIView.animate(withDuration: 0.7, animations: {
-//            self.titleLabel.alpha = 0
-//        }) { _ in
-//            // покажем и начнем анимацию цветка
-//            self.flowerView = LottieAnimationView(name: "BlueFlower")
-//            self.flowerView?.frame = self.view.bounds
-//            self.flowerView?.contentMode = .scaleAspectFit
-//            self.flowerView?.loopMode = .repeat(1)
-//            self.flowerView?.animationSpeed = 2
-//            self.view.addSubview(self.flowerView!)
-//            self.flowerView?.play()
-//            // Set constraints for animationView to have a bottom margin of 100 pixels
-//            self.flowerView?.snp.makeConstraints { make in
-//                make.leading.equalToSuperview()
-//                make.trailing.equalToSuperview()
-//                make.bottom.equalToSuperview().inset(100)
-//                make.top.equalToSuperview().inset(100)
-//            }
-//            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-//                self.startHapticFeedback()
-//                
-//                // Зацикливание вызова
-//                DispatchQueue.main.asyncAfter(deadline: .now() + 6.0) { // Подождите 2 секунды (пример)
-//                    self.animationFlower()
-//                }
-//            }
-//        }
-//    }
-
     private func animationFlower() {
-        guard animationCounter < 10 else {
-            // Если достигнуто 10 повторений, выходим из рекурсии
-            return
-        }
+        guard animationCounter < 10 && !isAnimationStopped else {
+                // Если достигнуто 10 повторений или анимацию остановили, выходим из рекурсии
+                isAnimationStopped = false  // Сбрасываем флаг
+                return
+            }
 
         // Увеличиваем счетчик
         animationCounter += 1
@@ -129,7 +100,7 @@ final class FlowerViewController: UIViewController {
             self.flowerView?.frame = self.view.bounds
             self.flowerView?.contentMode = .scaleAspectFit
             self.flowerView?.loopMode = .repeat(1)
-            self.flowerView?.animationSpeed = 2
+            self.flowerView?.animationSpeed = 1.5
             self.view.addSubview(self.flowerView!)
             self.flowerView?.play()
             
@@ -146,7 +117,7 @@ final class FlowerViewController: UIViewController {
                 self.startHapticFeedback()
                 
                 // Зацикливание вызова
-                DispatchQueue.main.asyncAfter(deadline: .now() + 6.0) { // Подождите 6 секунд (пример)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 7.5) { // Подождите 6 секунд (пример)
                     // Рекурсивный вызов для следующей анимации
                     self.animationFlower()
                 }
@@ -177,6 +148,7 @@ final class FlowerViewController: UIViewController {
             // Нажата кнопка "Стоп"
             UIView.animate(withDuration: 0.7, animations: {
                 self.stopAnimation() // стоп анимация
+                self.flowerView?.alpha = 0
                 self.startButton.alpha = 0 // скрыли
             }) { _ in
                 self.startButton.setTitle("Начнем", for: .normal)
@@ -188,18 +160,30 @@ final class FlowerViewController: UIViewController {
     }
     // стоп анимация
     private func stopAnimation() {
-        // Остановка анимации
+        // Остановка вибрации
+        feedbackGenerator?.stop()
+
+        // Остановка анимации цветка
         flowerView?.stop()
+        self.flowerView?.alpha = 0
+
         flowerView?.removeFromSuperview()
+
+        // Сброс счетчика анимации и остановка рекурсии
+        animationCounter = 0
+
         // Показываем снова titleLabel
         UIView.animate(withDuration: 0.7) {
             self.titleLabel.alpha = 1.0
         }
+        isAnimationStopped = true
+
     }
     // крестик закрыть остановить анимацию
     @objc private func closeButtonTapped() {
         dismiss(animated: true, completion: nil)
         stopAnimation()
+
     }
     
     private func startHapticFeedback() {
@@ -232,8 +216,8 @@ final class FlowerViewController: UIViewController {
     private func createHapticTransientEvents() -> [CHHapticEvent] {
         var events: [CHHapticEvent] = []
         
-        for i in 0..<14 {
-            let relativeTime = Double(i) * 0.20 // Интервал в 0.5 секунды между вибрациями
+        for i in 0..<20 {
+            let relativeTime = Double(i) * 0.15 // Интервал в 0.5 секунды между вибрациями
             let hapticEvent = CHHapticEvent(
                 eventType: .hapticTransient,
                 parameters: [],
@@ -246,3 +230,4 @@ final class FlowerViewController: UIViewController {
         return events
     }
 } // end
+

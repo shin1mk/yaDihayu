@@ -7,7 +7,6 @@
 
 import Foundation
 /* 
- рабочий вариант хаптик
  //
  //  FlowerViewController.swift
  //  yaDihayu
@@ -28,7 +27,8 @@ import Foundation
      // свойства
      private var flowerView: LottieAnimationView?
      private var feedbackGenerator: CHHapticEngine?
-     
+     private var animationCounter = 0
+
      // текст
      private let titleLabel: UILabel = {
          let label = UILabel()
@@ -84,38 +84,55 @@ import Foundation
          view.addSubview(startButton)
          startButton.snp.makeConstraints { make in
              make.centerX.equalToSuperview()
-             make.bottom.equalToSuperview().inset(30)
+             make.bottom.equalToSuperview().inset(40)
              make.width.equalTo(200)
          }
      }
      // анимация
      private func animationFlower() {
-         startHapticFeedback()
+         guard animationCounter < 10 else {
+             // Если достигнуто 10 повторений, выходим из рекурсии
+             return
+         }
+
+         // Увеличиваем счетчик
+         animationCounter += 1
          
-         // не видно текста
+         // Начало анимации
          UIView.animate(withDuration: 0.7, animations: {
              self.titleLabel.alpha = 0
          }) { _ in
-             // покажем и начнем анимацию цветка
+             // Запуск анимации цветка
              self.flowerView = LottieAnimationView(name: "BlueFlower")
              self.flowerView?.frame = self.view.bounds
              self.flowerView?.contentMode = .scaleAspectFit
-             self.flowerView?.loopMode = .repeat(10)
-             self.flowerView?.animationSpeed = 2
+             self.flowerView?.loopMode = .repeat(1)
+             self.flowerView?.animationSpeed = 1.5
              self.view.addSubview(self.flowerView!)
              self.flowerView?.play()
-             // Set constraints for animationView to have a bottom margin of 100 pixels
+             
+             // Установка ограничений для анимационного представления с отступом снизу на 100 пикселей
              self.flowerView?.snp.makeConstraints { make in
                  make.leading.equalToSuperview()
                  make.trailing.equalToSuperview()
                  make.bottom.equalToSuperview().inset(100)
                  make.top.equalToSuperview().inset(100)
              }
-             DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+             
+             // Задержка перед вызовом следующей анимации
+             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                  self.startHapticFeedback()
+                 
+                 // Зацикливание вызова
+                 DispatchQueue.main.asyncAfter(deadline: .now() + 7.5) { // Подождите 6 секунд (пример)
+                     // Рекурсивный вызов для следующей анимации
+                     self.animationFlower()
+                 }
              }
          }
      }
+
+
      // target
      private func setupTarget() {
          startButton.addTarget(self, action: #selector(startButtonTapped), for: .touchUpInside)
@@ -124,7 +141,6 @@ import Foundation
      // кнопка старт
      @objc private func startButtonTapped() {
          if startButton.currentTitle == "Начнем" {
-             
              // Нажата кнопка "Начать"
              UIView.animate(withDuration: 0.7, animations: {
                  self.animationFlower() // вызвали старт анимации
@@ -150,14 +166,19 @@ import Foundation
      }
      // стоп анимация
      private func stopAnimation() {
+         // Остановка вибрации
+         feedbackGenerator?.stop()
+
          // Остановка анимации
          flowerView?.stop()
          flowerView?.removeFromSuperview()
+
          // Показываем снова titleLabel
          UIView.animate(withDuration: 0.7) {
              self.titleLabel.alpha = 1.0
          }
      }
+
      // крестик закрыть остановить анимацию
      @objc private func closeButtonTapped() {
          dismiss(animated: true, completion: nil)
@@ -195,7 +216,7 @@ import Foundation
          var events: [CHHapticEvent] = []
          
          for i in 0..<20 {
-             let relativeTime = Double(i) * 0.25 // Интервал в 0.5 секунды между вибрациями
+             let relativeTime = Double(i) * 0.15 // Интервал в 0.5 секунды между вибрациями
              let hapticEvent = CHHapticEvent(
                  eventType: .hapticTransient,
                  parameters: [],
