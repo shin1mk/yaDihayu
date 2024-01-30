@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 import SafariServices
 
-
+/*
 final class InfoViewController: UIViewController {
    //MARK: Properties
     private let textLabel: UILabel = {
@@ -181,3 +181,4 @@ final class InfoViewController: UIViewController {
         }
     }
 }
+*/

@@ -7,14 +7,11 @@
 
 import UIKit
 import SnapKit
+import Lottie
 
-class MainViewController: UIViewController {
-    private let backgroundImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage(named: "background1")
-        imageView.contentMode = .scaleAspectFill
-        return imageView
-    }()
+final class MainViewController: UIViewController {
+    private var koalaView: LottieAnimationView?
+    // MARK: - свойства
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Просто дыши"
@@ -24,27 +21,33 @@ class MainViewController: UIViewController {
         label.numberOfLines = 0
         return label
     }()
-    private let breatheButton: UIButton = {
+    private let startButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Breathe", for: .normal)
+        button.setTitle("Начать", for: .normal)
         button.titleLabel?.font = UIFont.SFUITextHeavy(ofSize: 30)
         button.setTitleColor(.white, for: .normal)
         return button
     }()
+    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
-        view.backgroundColor = .gray
-        setupTarget()
+        animationFlower()
         setupUI()
+        setupTarget()
     }
-
+    // animation
+    private func animationFlower() {
+        koalaView = .init(name: "Koala")
+        koalaView!.frame = view.bounds
+        koalaView!.contentMode = .scaleAspectFit
+        koalaView!.loopMode = .loop
+        koalaView!.animationSpeed = 1
+        view.addSubview(koalaView!)
+        koalaView!.play()
+    }
+    // constraints
     private func setupUI() {
-        // background image view
-        view.addSubview(backgroundImageView)
-        backgroundImageView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-        }
+        view.backgroundColor = .black
         // title label
         view.addSubview(titleLabel)
         titleLabel.layer.zPosition = 1
@@ -53,36 +56,29 @@ class MainViewController: UIViewController {
             make.centerX.equalTo(view)
             make.width.equalTo(300)
         }
-        // pause button
-        view.addSubview(breatheButton)
-        breatheButton.layer.zPosition = 1
-        breatheButton.snp.makeConstraints { make in
+        // breatheButton
+        view.addSubview(startButton)
+        startButton.layer.zPosition = 999
+        startButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.bottom.equalToSuperview().inset(30)
         }
     }
-    
+    // target
     private func setupTarget() {
-        breatheButton.addTarget(self, action: #selector(breatheButtonTapped), for: .touchUpInside)
-
+        startButton.addTarget(self, action: #selector(startButtonTapped), for: .touchUpInside)
     }
-
-    @objc private func breatheButtonTapped() {
-        let breatheViewController = BreatheViewController()
-
+    // tapped
+    @objc private func startButtonTapped() {
+        let breatheViewController = FlowerViewController()
         // Установите анимацию transitionFrom
         let transition = CATransition()
-        transition.duration = 1.0
+        transition.duration = 0.7
         transition.type = CATransitionType.fade
-
-        // Добавьте анимацию к окну
         view.window?.layer.add(transition, forKey: kCATransition)
         breatheViewController.modalPresentationStyle = .overFullScreen
-
-        // Представьте контроллер
         present(breatheViewController, animated: false, completion: nil)
     }
 
 
-}
-
+} // end
