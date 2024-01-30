@@ -22,20 +22,18 @@ import Foundation
  import Lottie
  import CoreHaptics
 
-
  final class FlowerViewController: UIViewController {
      // свойства
      private var flowerView: LottieAnimationView?
-     private var feedbackGenerator: CHHapticEngine?
-     private var animationCounter = 0
-
+     private var feedbackGenerator: CHHapticEngine? // виброотклик
+     private var isAnimationStopped = false  // проверяем идет анимация или нет
+     private var animationCounter = 0 // счетчик для цикла повторений анимации
      // текст
      private let titleLabel: UILabel = {
          let label = UILabel()
          label.text = "Садись поудобнее\nРасслабь свое тело\nДелай вдох и выдох"
          label.font = UIFont.SFUITextRegular(ofSize: 25)
          label.textAlignment = .center
-         //        label.textColor = .systemBlue
          label.textColor = UIColor(red: 85/255.0, green: 175/255.0, blue: 231/255.0, alpha: 1.0)
          label.numberOfLines = 0
          return label
@@ -45,10 +43,8 @@ import Foundation
          button.setTitle("Начнем", for: .normal)
          button.titleLabel?.font = UIFont.SFUITextRegular(ofSize: 20)
          button.layer.cornerRadius = 10
-         //        button.backgroundColor = .systemGray6
          button.backgroundColor = UIColor(red: 85/255.0, green: 175/255.0, blue: 231/255.0, alpha: 1.0)
          button.setTitleColor(.white, for: .normal)
-         //        button.setTitleColor(UIColor(red: 85/255.0, green: 175/255.0, blue: 231/255.0, alpha: 1.0), for: .normal)
          return button
      }()
      private let closeButton: UIButton = {
@@ -86,79 +82,75 @@ import Foundation
              make.centerX.equalToSuperview()
              make.bottom.equalToSuperview().inset(40)
              make.width.equalTo(200)
+             make.height.equalTo(50)
          }
+     }
+     // target
+     private func setupTarget() {
+         startButton.addTarget(self, action: #selector(startButtonTapped), for: .touchUpInside)
+         closeButton.addTarget(self, action: #selector(closeButtonTapped), for: .touchUpInside)
      }
      // анимация
      private func animationFlower() {
-         guard animationCounter < 10 else {
-             // Если достигнуто 10 повторений, выходим из рекурсии
+         guard animationCounter < 10 && !isAnimationStopped else {
+             // Если достигнуто 10 повторений или анимацию остановили, выходим из цикла
+             isAnimationStopped = false  // Сбрасываем флаг
              return
          }
-
-         // Увеличиваем счетчик
+         // Увеличиваем счетчик на 1
          animationCounter += 1
-         
          // Начало анимации
          UIView.animate(withDuration: 0.7, animations: {
-             self.titleLabel.alpha = 0
+             self.titleLabel.alpha = 0 // скрыли текст
          }) { _ in
              // Запуск анимации цветка
              self.flowerView = LottieAnimationView(name: "BlueFlower")
              self.flowerView?.frame = self.view.bounds
              self.flowerView?.contentMode = .scaleAspectFit
-             self.flowerView?.loopMode = .repeat(1)
-             self.flowerView?.animationSpeed = 1.5
+             self.flowerView?.loopMode = .repeat(1) // повторы 1
+             self.flowerView?.animationSpeed = 1.5 // скорость
              self.view.addSubview(self.flowerView!)
              self.flowerView?.play()
-             
-             // Установка ограничений для анимационного представления с отступом снизу на 100 пикселей
+
              self.flowerView?.snp.makeConstraints { make in
                  make.leading.equalToSuperview()
                  make.trailing.equalToSuperview()
                  make.bottom.equalToSuperview().inset(100)
                  make.top.equalToSuperview().inset(100)
              }
-             
-             // Задержка перед вызовом следующей анимации
+             // Задержка перед вызовом вибро
              DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                  self.startHapticFeedback()
-                 
                  // Зацикливание вызова
-                 DispatchQueue.main.asyncAfter(deadline: .now() + 7.5) { // Подождите 6 секунд (пример)
-                     // Рекурсивный вызов для следующей анимации
+                 DispatchQueue.main.asyncAfter(deadline: .now() + 7.5) {
+                     // повтор вызова себя же что б шло по очереди
                      self.animationFlower()
                  }
              }
          }
      }
-
-
-     // target
-     private func setupTarget() {
-         startButton.addTarget(self, action: #selector(startButtonTapped), for: .touchUpInside)
-         closeButton.addTarget(self, action: #selector(closeButtonTapped), for: .touchUpInside)
-     }
      // кнопка старт
      @objc private func startButtonTapped() {
          if startButton.currentTitle == "Начнем" {
              // Нажата кнопка "Начать"
-             UIView.animate(withDuration: 0.7, animations: {
+             UIView.animate(withDuration: 0.5, animations: {
                  self.animationFlower() // вызвали старт анимации
                  self.startButton.alpha = 0 // на секунду убрали
              }) { _ in
                  self.startButton.setTitle("Закончить", for: .normal)
-                 UIView.animate(withDuration: 0.7) {
+                 UIView.animate(withDuration: 0.5) {
                      self.startButton.alpha = 1 // на секунду вернули
                  }
              }
          } else {
              // Нажата кнопка "Стоп"
-             UIView.animate(withDuration: 0.7, animations: {
+             UIView.animate(withDuration: 0.5, animations: {
                  self.stopAnimation() // стоп анимация
+                 self.flowerView?.alpha = 0 // скрыли цветок
                  self.startButton.alpha = 0 // скрыли
              }) { _ in
                  self.startButton.setTitle("Начнем", for: .normal)
-                 UIView.animate(withDuration: 0.7) {
+                 UIView.animate(withDuration: 5.5) {
                      self.startButton.alpha = 1 // показали
                  }
              }
@@ -166,62 +158,59 @@ import Foundation
      }
      // стоп анимация
      private func stopAnimation() {
-         // Остановка вибрации
-         feedbackGenerator?.stop()
-
-         // Остановка анимации
-         flowerView?.stop()
-         flowerView?.removeFromSuperview()
-
-         // Показываем снова titleLabel
-         UIView.animate(withDuration: 0.7) {
-             self.titleLabel.alpha = 1.0
+         DispatchQueue.main.async {
+             // Остановка вибрации
+             self.feedbackGenerator?.stop()
+             // Остановка анимации цветка
+             self.flowerView?.stop()
+             self.flowerView?.alpha = 0
+             // Сброс счетчика анимации и остановка рекурсии
+             self.animationCounter = 0
+             // Показываем снова titleLabel
+             UIView.animate(withDuration: 0.5) {
+                 self.titleLabel.alpha = 1.0
+             }
+             self.isAnimationStopped = true
          }
      }
-
      // крестик закрыть остановить анимацию
      @objc private func closeButtonTapped() {
          dismiss(animated: true, completion: nil)
          stopAnimation()
      }
-     
+     // виброотклик
      private func startHapticFeedback() {
          do {
              // Проверяем, поддерживается ли устройство вибрация
              guard CHHapticEngine.capabilitiesForHardware().supportsHaptics else { return }
-             
              // Создаем двигатель для вибрации
              feedbackGenerator = try CHHapticEngine()
-             
              // Запускаем двигатель
              try feedbackGenerator?.start()
-             
              // Создаем паттерн для вибрации
              let hapticPattern = try CHHapticPattern(
                  events: createHapticTransientEvents(),
                  parameters: []
              )
-             
              // Создаем плеер для вибрации
              let hapticPlayer = try feedbackGenerator?.makePlayer(with: hapticPattern)
-             
              // Воспроизводим вибрацию
              try hapticPlayer?.start(atTime: 0)
          } catch {
              print("Не удалось запустить вибрацию: \(error)")
          }
      }
-     
+     // настраивае вибрации
      private func createHapticTransientEvents() -> [CHHapticEvent] {
          var events: [CHHapticEvent] = []
-         
-         for i in 0..<20 {
-             let relativeTime = Double(i) * 0.15 // Интервал в 0.5 секунды между вибрациями
+         // цикл
+         for i in 0..<20 { // повторы
+             let relativeTime = Double(i) * 0.15 // Интервал между вибрациями
              let hapticEvent = CHHapticEvent(
                  eventType: .hapticTransient,
                  parameters: [],
                  relativeTime: relativeTime,
-                 duration: 0.1 // Длительность короткой вибрации
+                 duration: 0.1 // Длительность вибрации
              )
              events.append(hapticEvent)
          }
@@ -229,5 +218,6 @@ import Foundation
          return events
      }
  } // end
+
 
 */

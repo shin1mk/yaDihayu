@@ -19,6 +19,7 @@ final class FlowerViewController: UIViewController {
     private var feedbackGenerator: CHHapticEngine? // виброотклик
     private var isAnimationStopped = false  // проверяем идет анимация или нет
     private var animationCounter = 0 // счетчик для цикла повторений анимации
+    private let targetAnimationCount = 5 // Задайте нужное количество итераций
     // текст
     private let titleLabel: UILabel = {
         let label = UILabel()
@@ -83,8 +84,11 @@ final class FlowerViewController: UIViewController {
     }
     // анимация
     private func animationFlower() {
-        guard animationCounter < 10 && !isAnimationStopped else {
-            // Если достигнуто 10 повторений или анимацию остановили, выходим из цикла
+        guard animationCounter < targetAnimationCount && !isAnimationStopped else {
+            // Если достигнуто нужное количество повторений или анимацию остановили, выводим сообщение
+            if animationCounter == targetAnimationCount {
+                // действие по завершению хз какое
+            }
             isAnimationStopped = false  // Сбрасываем флаг
             return
         }
@@ -113,7 +117,7 @@ final class FlowerViewController: UIViewController {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 self.startHapticFeedback()
                 // Зацикливание вызова
-                DispatchQueue.main.asyncAfter(deadline: .now() + 7.5) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 7.8) {
                     // повтор вызова себя же что б шло по очереди
                     self.animationFlower()
                 }
