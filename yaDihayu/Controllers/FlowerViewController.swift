@@ -93,7 +93,7 @@ final class FlowerViewController: UIViewController {
             self.flowerView?.animationSpeed = 1.6 // скорость
             self.view.addSubview(self.flowerView!)
             self.flowerView?.play()
-
+            
             self.flowerView?.snp.makeConstraints { make in
                 make.leading.equalToSuperview()
                 make.trailing.equalToSuperview()
@@ -114,8 +114,7 @@ final class FlowerViewController: UIViewController {
                 UIView.animate(withDuration: 0.5) {
                     self.startButton.alpha = 1 // на секунду вернули
                 }
-                self.startHapticFeedback()
-
+                self.startHapticFeedback() // старт вибро
             }
         } else {
             // Нажата кнопка "Стоп"
@@ -129,8 +128,7 @@ final class FlowerViewController: UIViewController {
                 UIView.animate(withDuration: 0.5) {
                     self.startButton.alpha = 1 // показали
                 }
-                self.stopHapticFeedback()
-
+                self.stopHapticFeedback() // останавливаем вибро
             }
         }
     }
@@ -155,7 +153,6 @@ final class FlowerViewController: UIViewController {
         stopAnimation()
     }
     // виброотклик
-   
     private func startHapticFeedback() {
         do {
             // Проверяем, поддерживается ли устройство вибрация
@@ -177,65 +174,49 @@ final class FlowerViewController: UIViewController {
             print("Не удалось запустить вибрацию: \(error)")
         }
     }
-    /*
     // настраивае вибрации
     private func createHapticTransientEvents() -> [CHHapticEvent] {
         var events: [CHHapticEvent] = []
-        // цикл
-        for i in 0..<20 { // повторы
-            let relativeTime = Double(i) * 0.15 // Интервал между вибрациями
-            let hapticEvent = CHHapticEvent(
-                eventType: .hapticTransient,
-                parameters: [],
-                relativeTime: relativeTime,
-                duration: 0.1 // Длительность вибрации
-            )
-            events.append(hapticEvent)
-        }
-        
-        return events
-    }
-     */
-    private func createHapticTransientEvents() -> [CHHapticEvent] {
-        var events: [CHHapticEvent] = []
-
-        // Loop for 10 repetitions
+        // Цикл для 10 повторений
         for iteration in 0..<10 {
-            // Vibration for 4 seconds
-            for i in 0..<15 { // 8 events for 4 seconds of vibration
-                let relativeTime = Double(i) * 0.2 + Double(iteration) * 8.4 // Adjusted time for each iteration
+            // Вибрация в течение 4 секунд
+            for i in 0..<22 { // 15 событий для 4 секунд вибрации
+                // Вычисление времени относительно текущей итерации и индекса внутреннего цикла
+                let relativeTime = Double(i) * 0.2 + Double(iteration) * 8.4 // Скорректированное время для каждой итерации
+                // Создание события вибрации
                 let hapticEvent = CHHapticEvent(
                     eventType: .hapticTransient,
                     parameters: [],
                     relativeTime: relativeTime,
-                    duration: 0.05 // Duration of vibration
+                    duration: 0.05 // Длительность вибрации
                 )
+                // Добавление события в массив
                 events.append(hapticEvent)
             }
-
-            // Pause for 4 seconds after each iteration (except the last one)
+            // Пауза в течение 4 секунд после каждой итерации (кроме последней)
             if iteration < 10 {
-                for i in 0..<10 { // 4 events for 4 seconds of pause
-                    let relativeTime = Double(i) * 0.5 + Double(iteration) * 8.0 + 4.0 // Adjusted time for each iteration
+                for i in 0..<10 { // 10 событий для 4 секунд паузы
+                    // Вычисление времени относительно текущей итерации и индекса внутреннего цикла
+                    let relativeTime = Double(i) * 0.5 + Double(iteration) * 8.0 + 4.0 // Скорректированное время для каждой итерации
+                    // Создание события паузы
                     let hapticEvent = CHHapticEvent(
                         eventType: .hapticTransient,
                         parameters: [],
                         relativeTime: relativeTime,
-                        duration: 0.1 // Duration of the pause
+                        duration: 0.1 // Длительность паузы
                     )
+                    // Добавление события в массив
                     events.append(hapticEvent)
                 }
             }
         }
-
         return events
     }
+    // останавливаем вибрации
     private func stopHapticFeedback() {
         // Остановка вибрации
         feedbackGenerator?.stop()
         feedbackGenerator = nil
     }
-
-
 } // end
 
