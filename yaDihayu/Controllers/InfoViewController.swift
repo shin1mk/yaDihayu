@@ -1,6 +1,6 @@
 //
 //  InfoViewController.swift
-//  BoilEasy
+//  yaDihayu
 //
 //  Created by SHIN MIKHAIL on 13.01.2024.
 //
@@ -9,12 +9,11 @@ import UIKit
 import SnapKit
 import SafariServices
 
-/*
 final class InfoViewController: UIViewController {
-   //MARK: Properties
+    // MARK: Properties
     private let textLabel: UILabel = {
         let label = UILabel()
-        label.text = "textLabel".localized()
+        label.text = "Додаток: Я дихаю\n\n\nБоріться зі стресом і тривогою.\nПокращуй концентрацію, сон та здоров'я!"
         label.font = UIFont.SFUITextRegular(ofSize: 14)
         label.textColor = .white
         label.numberOfLines = 0
@@ -22,14 +21,14 @@ final class InfoViewController: UIViewController {
     }()
     private let likeLabel: UILabel = {
         let label = UILabel()
-        label.text = "likeLabel".localized()
+        label.text = "Якщо Вам сподобався наш додаток:"
         label.font = UIFont.SFUITextRegular(ofSize: 16)
         label.textColor = .white
         return label
     }()
     private let shareButton: UIButton = {
         let button = UIButton()
-        button.setTitle("shareButton".localized(), for: .normal)
+        button.setTitle("Поділитися", for: .normal)
         button.titleLabel?.font = UIFont.SFUITextMedium(ofSize: 16)
         button.setTitleColor(.systemBlue, for: .normal)
         button.backgroundColor = .systemGray6
@@ -38,7 +37,7 @@ final class InfoViewController: UIViewController {
     }()
     private let rateButton: UIButton = {
         let button = UIButton()
-        button.setTitle("rateButton".localized(), for: .normal)
+        button.setTitle("⭐️ Оцінити", for: .normal)
         button.titleLabel?.font = UIFont.SFUITextMedium(ofSize: 16)
         button.setTitleColor(.systemBlue, for: .normal)
         button.backgroundColor = .systemGray6
@@ -47,7 +46,7 @@ final class InfoViewController: UIViewController {
     }()
     private let supportButton: UIButton = {
         let button = UIButton()
-        button.setTitle("supportButton".localized(), for: .normal)
+        button.setTitle("☕️ Підтримати нас", for: .normal)
         button.titleLabel?.font = UIFont.SFUITextMedium(ofSize: 16)
         button.setTitleColor(.systemBlue, for: .normal)
         button.backgroundColor = .systemGray6
@@ -56,7 +55,7 @@ final class InfoViewController: UIViewController {
     }()
     private let letterButton: UIButton = {
         let button = UIButton()
-        button.setTitle("letterButton".localized(), for: .normal)
+        button.setTitle("✉️ Написати нам", for: .normal)
         button.titleLabel?.font = UIFont.SFUITextMedium(ofSize: 16)
         button.setTitleColor(.systemBlue, for: .normal)
         button.backgroundColor = .systemGray6
@@ -98,7 +97,7 @@ final class InfoViewController: UIViewController {
         textLabel.snp.makeConstraints { make in
             make.top.equalTo(contentView).offset(20)
             make.leading.trailing.equalToSuperview().inset(15)
-            make.height.greaterThanOrEqualTo(150)
+            make.height.greaterThanOrEqualTo(70)
         }
         
         contentView.addSubview(likeLabel)
@@ -122,22 +121,20 @@ final class InfoViewController: UIViewController {
             make.height.equalTo(40)
         }
         
-//        contentView.addSubview(supportButton)
-//        supportButton.snp.makeConstraints { make in
-//            make.top.equalTo(rateButton.snp.bottom).offset(15)
-//            make.leading.trailing.equalToSuperview().inset(15)
-//            make.height.equalTo(40)
-//        }
-        
-        contentView.addSubview(letterButton)
-        letterButton.snp.makeConstraints { make in
+        contentView.addSubview(supportButton)
+        supportButton.snp.makeConstraints { make in
             make.top.equalTo(rateButton.snp.bottom).offset(15)
             make.leading.trailing.equalToSuperview().inset(15)
             make.height.equalTo(40)
-            make.bottom.equalToSuperview().offset(-10)
-
         }
-
+        
+        contentView.addSubview(letterButton)
+        letterButton.snp.makeConstraints { make in
+            make.top.equalTo(supportButton.snp.bottom).offset(15)
+            make.leading.trailing.equalToSuperview().inset(15)
+            make.height.equalTo(40)
+            make.bottom.equalToSuperview().offset(-10)
+        }
     }
     
     private func addTarget() {
@@ -148,17 +145,15 @@ final class InfoViewController: UIViewController {
     }
     // share
     @objc private func shareButtonTapped() {
-        let appURL = URL(string: "https://apps.apple.com/app/boileasy/id6470710176")!
-        let shareText = "BoilEasy\n\(appURL)"
+        let appURL = URL(string: "https://apps.apple.com/app/yadihayu/id6476978180")!
+        let shareText = "yaDihayu\n\(appURL)"
         let activityViewController = UIActivityViewController(activityItems: [shareText], applicationActivities: nil)
-        // Предотвратите показывание контроллера на iPad в поповере
         activityViewController.popoverPresentationController?.sourceView = view
-        // Покажите UIActivityViewController
         present(activityViewController, animated: true, completion: nil)
     }
     
     @objc private func rateButtonTapped() {
-        if let url = URL(string: "https://apps.apple.com/app/boileasy/id6470710176") {
+        if let url = URL(string: "https://apps.apple.com/app/yadihayu/id6476978180") {
             let safariViewController = SFSafariViewController(url: url)
             present(safariViewController, animated: true, completion: nil)
         }
@@ -172,7 +167,7 @@ final class InfoViewController: UIViewController {
     
     @objc private func letterButtonTapped() {
         let recipient = "shininswift@gmail.com"
-        let subject = "BoilEasy"
+        let subject = "yaDihayu"
         
         let urlString = "mailto:\(recipient)?subject=\(subject)".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
         
@@ -181,4 +176,3 @@ final class InfoViewController: UIViewController {
         }
     }
 }
-*/

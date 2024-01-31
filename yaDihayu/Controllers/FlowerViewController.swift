@@ -20,8 +20,8 @@ final class FlowerViewController: UIViewController {
     // текст
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Садись поудобнее\nРасслабь свое тело\nДелай вдох и выдох"
-        label.font = UIFont.SFUITextRegular(ofSize: 25)
+        label.text = "Сідай зручніше\nРозслаб своє тіло\nСфокусуйся на диханні\nЗроби глибокий вдих і видих"
+        label.font = UIFont.SFUITextRegular(ofSize: 22)
         label.textAlignment = .center
         label.textColor = UIColor(red: 85/255.0, green: 175/255.0, blue: 231/255.0, alpha: 1.0)
         label.numberOfLines = 0
@@ -29,7 +29,7 @@ final class FlowerViewController: UIViewController {
     }()
     private let startButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Начнем", for: .normal)
+        button.setTitle("Почнемо", for: .normal)
         button.titleLabel?.font = UIFont.SFUITextRegular(ofSize: 20)
         button.layer.cornerRadius = 10
         button.backgroundColor = UIColor(red: 85/255.0, green: 175/255.0, blue: 231/255.0, alpha: 1.0)
@@ -55,7 +55,7 @@ final class FlowerViewController: UIViewController {
         // закрыть
         view.addSubview(closeButton)
         closeButton.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(30)
+            make.top.equalToSuperview().offset(50)
             make.trailing.equalToSuperview()
         }
         // текст
@@ -89,7 +89,7 @@ final class FlowerViewController: UIViewController {
             self.flowerView = LottieAnimationView(name: "BlueFlower")
             self.flowerView?.frame = self.view.bounds
             self.flowerView?.contentMode = .scaleAspectFit
-            self.flowerView?.loopMode = .repeat(10) // повторы 1
+            self.flowerView?.loopMode = .repeat(10) // повторы 10
             self.flowerView?.animationSpeed = 1.6 // скорость
             self.view.addSubview(self.flowerView!)
             self.flowerView?.play()
@@ -104,13 +104,13 @@ final class FlowerViewController: UIViewController {
     }
     // кнопка старт
     @objc private func startButtonTapped() {
-        if startButton.currentTitle == "Начнем" {
+        if startButton.currentTitle == "Почнемо" {
             // Нажата кнопка "Начать"
             UIView.animate(withDuration: 0.5, animations: {
                 self.animationFlower() // вызвали старт анимации
                 self.startButton.alpha = 0 // на секунду убрали
             }) { _ in
-                self.startButton.setTitle("Закончить", for: .normal)
+                self.startButton.setTitle("Закінчити", for: .normal)
                 UIView.animate(withDuration: 0.5) {
                     self.startButton.alpha = 1 // на секунду вернули
                 }
@@ -124,7 +124,7 @@ final class FlowerViewController: UIViewController {
                 self.flowerView?.isHidden = true
                 self.startButton.alpha = 0 // скрыли
             }) { _ in
-                self.startButton.setTitle("Начнем", for: .normal)
+                self.startButton.setTitle("Почнемо", for: .normal)
                 UIView.animate(withDuration: 0.5) {
                     self.startButton.alpha = 1 // показали
                 }
@@ -180,7 +180,7 @@ final class FlowerViewController: UIViewController {
         // Цикл для 10 повторений
         for iteration in 0..<10 {
             // Вибрация в течение 4 секунд
-            for i in 0..<22 { // 15 событий для 4 секунд вибрации
+            for i in 0..<20 { // 15 событий для 4 секунд вибрации
                 // Вычисление времени относительно текущей итерации и индекса внутреннего цикла
                 let relativeTime = Double(i) * 0.2 + Double(iteration) * 8.4 // Скорректированное время для каждой итерации
                 // Создание события вибрации
