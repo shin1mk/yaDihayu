@@ -17,9 +17,6 @@ final class FlowerViewController: UIViewController {
     // свойства
     private var flowerView: LottieAnimationView?
     private var feedbackGenerator: CHHapticEngine? // виброотклик
-    private var isAnimationStopped = false  // проверяем идет анимация или нет
-    private var animationCounter = 0 // счетчик для цикла повторений анимации
-    private let targetAnimationCount = 5 // Задайте нужное количество итераций
     // текст
     private let titleLabel: UILabel = {
         let label = UILabel()
@@ -84,16 +81,6 @@ final class FlowerViewController: UIViewController {
     }
     // анимация
     private func animationFlower() {
-        guard animationCounter < targetAnimationCount && !isAnimationStopped else {
-            // Если достигнуто нужное количество повторений или анимацию остановили, выводим сообщение
-            if animationCounter == targetAnimationCount {
-                // действие по завершению хз какое
-            }
-            isAnimationStopped = false  // Сбрасываем флаг
-            return
-        }
-        // Увеличиваем счетчик на 1
-        animationCounter += 1
         // Начало анимации
         UIView.animate(withDuration: 0.7, animations: {
             self.titleLabel.alpha = 0 // скрыли текст
@@ -102,8 +89,8 @@ final class FlowerViewController: UIViewController {
             self.flowerView = LottieAnimationView(name: "BlueFlower")
             self.flowerView?.frame = self.view.bounds
             self.flowerView?.contentMode = .scaleAspectFit
-            self.flowerView?.loopMode = .repeat(1) // повторы 1
-            self.flowerView?.animationSpeed = 1.5 // скорость
+            self.flowerView?.loopMode = .repeat(10) // повторы 1
+            self.flowerView?.animationSpeed = 1.6 // скорость
             self.view.addSubview(self.flowerView!)
             self.flowerView?.play()
 
@@ -112,15 +99,6 @@ final class FlowerViewController: UIViewController {
                 make.trailing.equalToSuperview()
                 make.bottom.equalToSuperview().inset(100)
                 make.top.equalToSuperview().inset(100)
-            }
-            // Задержка перед вызовом вибро
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                self.startHapticFeedback()
-                // Зацикливание вызова
-                DispatchQueue.main.asyncAfter(deadline: .now() + 7.8) {
-                    // повтор вызова себя же что б шло по очереди
-                    self.animationFlower()
-                }
             }
         }
     }
@@ -136,18 +114,23 @@ final class FlowerViewController: UIViewController {
                 UIView.animate(withDuration: 0.5) {
                     self.startButton.alpha = 1 // на секунду вернули
                 }
+                self.startHapticFeedback()
+
             }
         } else {
             // Нажата кнопка "Стоп"
             UIView.animate(withDuration: 0.5, animations: {
                 self.stopAnimation() // стоп анимация
                 self.flowerView?.alpha = 0 // скрыли цветок
+                self.flowerView?.isHidden = true
                 self.startButton.alpha = 0 // скрыли
             }) { _ in
                 self.startButton.setTitle("Начнем", for: .normal)
-                UIView.animate(withDuration: 5.5) {
+                UIView.animate(withDuration: 0.5) {
                     self.startButton.alpha = 1 // показали
                 }
+                self.stopHapticFeedback()
+
             }
         }
     }
@@ -159,13 +142,11 @@ final class FlowerViewController: UIViewController {
             // Остановка анимации цветка
             self.flowerView?.stop()
             self.flowerView?.alpha = 0
-            // Сброс счетчика анимации и остановка рекурсии
-            self.animationCounter = 0
+            self.flowerView?.isHidden = true
             // Показываем снова titleLabel
             UIView.animate(withDuration: 0.5) {
                 self.titleLabel.alpha = 1.0
             }
-            self.isAnimationStopped = true
         }
     }
     // крестик закрыть остановить анимацию
@@ -174,6 +155,7 @@ final class FlowerViewController: UIViewController {
         stopAnimation()
     }
     // виброотклик
+   
     private func startHapticFeedback() {
         do {
             // Проверяем, поддерживается ли устройство вибрация
@@ -195,6 +177,7 @@ final class FlowerViewController: UIViewController {
             print("Не удалось запустить вибрацию: \(error)")
         }
     }
+    /*
     // настраивае вибрации
     private func createHapticTransientEvents() -> [CHHapticEvent] {
         var events: [CHHapticEvent] = []
@@ -212,5 +195,47 @@ final class FlowerViewController: UIViewController {
         
         return events
     }
+     */
+    private func createHapticTransientEvents() -> [CHHapticEvent] {
+        var events: [CHHapticEvent] = []
+
+        // Loop for 10 repetitions
+        for iteration in 0..<10 {
+            // Vibration for 4 seconds
+            for i in 0..<15 { // 8 events for 4 seconds of vibration
+                let relativeTime = Double(i) * 0.2 + Double(iteration) * 8.4 // Adjusted time for each iteration
+                let hapticEvent = CHHapticEvent(
+                    eventType: .hapticTransient,
+                    parameters: [],
+                    relativeTime: relativeTime,
+                    duration: 0.05 // Duration of vibration
+                )
+                events.append(hapticEvent)
+            }
+
+            // Pause for 4 seconds after each iteration (except the last one)
+            if iteration < 10 {
+                for i in 0..<10 { // 4 events for 4 seconds of pause
+                    let relativeTime = Double(i) * 0.5 + Double(iteration) * 8.0 + 4.0 // Adjusted time for each iteration
+                    let hapticEvent = CHHapticEvent(
+                        eventType: .hapticTransient,
+                        parameters: [],
+                        relativeTime: relativeTime,
+                        duration: 0.1 // Duration of the pause
+                    )
+                    events.append(hapticEvent)
+                }
+            }
+        }
+
+        return events
+    }
+    private func stopHapticFeedback() {
+        // Остановка вибрации
+        feedbackGenerator?.stop()
+        feedbackGenerator = nil
+    }
+
+
 } // end
 
